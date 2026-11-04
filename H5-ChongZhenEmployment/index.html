@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+<meta http-equiv="Pragma" content="no-cache">
+<meta http-equiv="Expires" content="0">
+<title>崇祯直聘 · 明末官场沉浮模拟器</title>
+<meta name="description" content="一款明末官场生存模拟器，核心机制致敬《王权》(Reigns)的四方势力动态平衡。你将扮演末明知县，在皇权、阉党、清流与百姓的夹缝中极限周旋。">
+<meta property="og:title" content="崇祯直聘 · 明末官场沉浮模拟器">
+<meta property="og:description" content="大厦将倾，泥沙俱下。这盘棋没有对错——你只是在选，活成怎样的人。">
+<meta property="og:image" content="cover-landscape.webp">
+<meta property="og:type" content="website">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="cover-landscape.webp">
+<script>var APP_VERSION='d4aa62f6';</script>
+<link rel="preload" href="qrcode-author-wx.webp" as="image">
+<link rel="preload" href="https://fonts.loli.net/css2?family=Ma+Shan+Zheng&family=Noto+Serif+SC:wght@400;700;900&display=swap" as="style" onload="this.onload=null;this.rel='stylesheet'">
+<noscript><link href="https://fonts.loli.net/css2?family=Ma+Shan+Zheng&family=Noto+Serif+SC:wght@400;700;900&display=swap" rel="stylesheet"></noscript>
+<link rel="stylesheet" href="styles_d12b160b.css">
+</head>
+<body class="paper-bg">
+
+<!-- TITLE SCREEN -->
+<div id="title-screen" class="screen active">
+  <button class="title-sound-toggle" onclick="toggleSound()" id="soundToggle">音乐：开</button>
+  <!-- layered background -->
+  <div class="title-bg-layer title-bg-gradient"></div>
+  <div class="title-bg-layer title-bg-texture"></div>
+  <div class="title-bg-layer title-bg-ink"></div>
+  <div class="title-bg-layer title-bg-image"></div>
+  <div class="title-bg-layer title-bg-mountains"></div>
+  <div class="title-bg-layer title-bg-vignette"></div>
+  <!-- particle canvas -->
+  <canvas id="titleParticles"></canvas>
+  <!-- ambient glow -->
+  <div class="title-ambient-glow"></div>
+  <!-- ink strokes -->
+  <div class="title-ink-stroke-top"></div>
+  <div class="title-ink-stroke-bot"></div>
+  <!-- main frame -->
+  <div class="title-frame fade-in">
+    <div class="title-seal" style="display:none">敕</div>
+    <div class="title-main">崇祯直聘</div>
+    <div class="title-sub">明末官场沉浮模拟器</div>
+    <div class="title-tagline">"大厦将倾，泥沙俱下。这盘棋没有对错——你只是在选，活成怎样的人。"</div>
+    <div class="title-buttons">
+      <button class="title-btn" onclick="goToSelect()">开 始 仕 途</button>
+      <button class="title-btn" onclick="loadGame()">读 取 存 档</button>
+    </div>
+  </div>
+  <div class="title-version-topleft">V0.1 Alpha</div>
+  <div class="title-bottom-bar">
+    <button class="title-follow-btn" onclick="showFollowModal()">关注更新 & 反馈</button>
+    <button class="title-follow-btn" onclick="window.open('https://susugogo.cn','_blank')">作者主页</button>
+  </div>
+</div>
+
+<!-- CHARACTER SELECT SCREEN -->
+<div id="select-screen" class="screen paper-bg">
+  <div class="select-header"><h2>铨 选 出 身</h2></div>
+  <div class="select-intro">先选个出身吧，毕竟在上位者眼里，诸位大人的"斤两"从一开始便标好了价。</div>
+  <div class="char-grid" id="charGrid"></div>
+</div>
+
+<!-- MAIN GAME SCREEN -->
+<div id="game-screen" class="screen paper-bg">
+  <div class="game-topbar">
+    <div>
+      <span class="topbar-rank" id="topbarRank" onclick="showRankTree()">正七品 · 知县</span>
+    </div>
+    <div class="topbar-turn" id="topbarTurn">崇祯元年 · 第一卷</div>
+    <div class="topbar-actions">
+      <button class="topbar-btn" onclick="toggleSound()" id="soundToggle2">音乐</button>
+      <button class="topbar-btn" onclick="saveGame()">存档</button>
+      <button class="topbar-btn" onclick="loadGame()">读档</button>
+      <button class="topbar-btn" onclick="toggleFullscreen()" id="fullscreenBtn">全屏</button>
+    </div>
+  </div>
+  <div class="game-layout">
+    <div class="panel-left">
+      <div class="panel-section">
+        <div class="panel-section-title">个 人 能 力</div>
+        <div id="statsPanel"></div>
+      </div>
+      <div class="panel-section">
+        <div class="panel-section-title">角 色 标 签</div>
+        <div class="tags-container" id="tagsPanel"></div>
+      </div>
+      <div class="panel-section">
+        <div class="panel-section-title">履 历 档 案</div>
+        <div class="player-info-panel" id="playerInfoPanel"></div>
+      </div>
+    </div>
+    <div class="panel-center" id="eventPanel">
+      <!-- Events render here -->
+    </div>
+    <div class="panel-right">
+      <div class="panel-section">
+        <div class="panel-section-title">五 方 态 度</div>
+        <div id="attitudesPanel"></div>
+      </div>
+    </div>
+    <button class="mobile-drawer-toggle" id="drawerToggle" onclick="toggleMobileDrawer()">
+      <span class="drawer-toggle-arrow">▲</span> 数 值 面 板
+    </button>
+  </div>
+</div>
+
+<!-- ENDING SCREEN -->
+<div id="ending-screen" class="screen paper-bg">
+  <div id="endingContent"></div>
+</div>
+
+<!-- MODAL -->
+<div id="gameModal" class="game-modal">
+  <div class="modal-backdrop" onclick="closeModal()"></div>
+  <div class="modal-panel">
+    <div class="modal-body"></div>
+  </div>
+</div>
+
+<!-- Title screen particles (self-contained IIFE) -->
+<script>
+(function initTitleParticles(){
+  const canvas=document.getElementById('titleParticles');
+  if(!canvas)return;
+  const ctx=canvas.getContext('2d');
+  let particles=[];
+  let w,h,animId;
+  function resize(){
+    w=canvas.width=canvas.offsetWidth;
+    h=canvas.height=canvas.offsetHeight;
+  }
+  function createParticle(){
+    const type=Math.random();
+    if(type<0.6){
+      return{x:Math.random()*w,y:Math.random()*h,
+        vx:(Math.random()-0.5)*0.3,vy:-0.15-Math.random()*0.3,
+        size:Math.random()*2+0.5,alpha:Math.random()*0.25+0.05,
+        life:1,decay:0.0005+Math.random()*0.001,
+        color:`rgba(197,165,90,`};
+    } else if(type<0.85){
+      return{x:Math.random()*w,y:h+10,
+        vx:(Math.random()-0.5)*0.5,vy:-0.4-Math.random()*0.6,
+        size:Math.random()*1.5+0.5,alpha:Math.random()*0.4+0.1,
+        life:1,decay:0.001+Math.random()*0.002,
+        color:`rgba(200,100,30,`};
+    } else {
+      return{x:Math.random()*w,y:Math.random()*h,
+        vx:(Math.random()-0.5)*0.15,vy:(Math.random()-0.5)*0.15,
+        size:Math.random()*1+0.3,alpha:Math.random()*0.15+0.03,
+        life:1,decay:0.0003+Math.random()*0.0005,
+        color:`rgba(245,230,200,`};
+    }
+  }
+  function init(){
+    resize();
+    particles=[];
+    for(let i=0;i<60;i++) particles.push(createParticle());
+  }
+  function draw(){
+    ctx.clearRect(0,0,w,h);
+    for(let i=particles.length-1;i>=0;i--){
+      const p=particles[i];
+      p.x+=p.vx;p.y+=p.vy;
+      p.vx+=Math.sin(Date.now()*0.001+i)*0.005;
+      p.life-=p.decay;
+      if(p.life<=0||p.y<-20||p.x<-20||p.x>w+20){
+        particles[i]=createParticle();continue;
+      }
+      const a=p.alpha*p.life;
+      ctx.beginPath();
+      ctx.arc(p.x,p.y,p.size,0,Math.PI*2);
+      ctx.fillStyle=p.color+a+')';
+      ctx.fill();
+    }
+    animId=requestAnimationFrame(draw);
+  }
+  window.addEventListener('resize',resize);
+  init();draw();
+  window._stopTitleParticles=function(){cancelAnimationFrame(animId);};
+})();
+</script>
+
+<!-- Game scripts (static loading for maximum compatibility) -->
+<script src="data/constants_d12b160b.js"></script>
+<script src="data/events_d12b160b.js"></script>
+<script src="data/branches_d12b160b.js"></script>
+<script src="engine_d12b160b.js"></script>
+
+</body>
+</html>

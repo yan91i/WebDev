@@ -1,0 +1,43 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
+<title>汉末孤城：背水之阵</title><link rel="stylesheet" href="style.css">
+</head>
+<body>
+<div id="app">
+<header><div><h1>汉末孤城：背水之阵</h1><p>原创三国题材 · 单机策略守城</p></div><button id="soundBtn">🔊</button></header>
+<main>
+<section id="start" class="screen active">
+ <div class="hero"><div class="seal">汉</div><h2>江水在后，强敌在前</h2><p>守住孤城十二日，积攒士气，在最终决战中击破敌军。</p></div>
+ <div class="generals">
+  <button class="general selected" data-id="zhao"><b>赵云型武将</b><span>龙胆：攻击后概率连击</span></button>
+  <button class="general" data-id="guan"><b>关羽型武将</b><span>威震：高伤害，擅长斩将</span></button>
+  <button class="general" data-id="zhuge"><b>军师型武将</b><span>奇谋：技能消耗更低</span></button>
+ </div>
+ <button id="startBtn" class="primary">出征守城</button>
+ <p class="fine">本作使用原创名称、规则与界面，不含原游戏素材。</p>
+</section>
+<section id="game" class="screen">
+ <div class="topbar"><span>第 <b id="day">1</b>/12 日</span><span>粮草 <b id="food">100</b></span><span>士气 <b id="morale">50</b></span><span>金币 <b id="gold">0</b></span></div>
+ <div id="battlefield">
+  <div class="river">≈ ≈ ≈ 后方江水 ≈ ≈ ≈</div>
+  <div class="side player"><div class="portrait">將</div><div><b id="heroName">常山骁将</b><div class="bar"><i id="hpBar"></i></div><small>兵力 <span id="hpText"></span></small></div></div>
+  <div id="fx"></div>
+  <div class="side enemy"><div><b id="enemyName">黄巾残部</b><div class="bar red"><i id="enemyBar"></i></div><small>敌军 <span id="enemyText"></span></small></div><div class="portrait enemyPortrait">敌</div></div>
+ </div>
+ <div id="log" aria-live="polite"></div>
+ <div class="skills">
+  <button data-skill="attack">⚔️<b>突击</b><span>无消耗</span></button>
+  <button data-skill="skill">🔥<b id="skillName">龙胆破阵</b><span>20 士气</span></button>
+  <button data-skill="defend">🛡️<b>结阵</b><span>恢复兵力</span></button>
+  <button data-skill="strategy">📜<b>火计</b><span>15 粮草</span></button>
+ </div>
+</section>
+<section id="camp" class="screen"><h2>夜幕降临 · 军营整备</h2><p id="campText"></p><div class="cards">
+ <button data-camp="recruit"><b>招募乡勇</b><span>30 金币：兵力 +35</span></button>
+ <button data-camp="feast"><b>犒赏三军</b><span>25 粮草：士气 +30</span></button>
+ <button data-camp="scout"><b>夜探敌营</b><span>获得金币，可能遭伏击</span></button>
+ </div><button id="nextBtn" class="primary">迎战下一日</button></section>
+<section id="end" class="screen"><div class="hero"><div class="seal" id="endSeal">胜</div><h2 id="endTitle"></h2><p id="endText"></p></div><div id="score"></div><button id="restartBtn" class="primary">重新开始</button></section>
+</main></div><script src="game.js"></script></body></html>
