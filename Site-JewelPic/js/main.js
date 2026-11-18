@@ -1,0 +1,14 @@
+const PAGES=[["index.html","Overview"],["ux-insights.html","UX Insights"],["video.html","Video"],["features.html","Features",5],["faq.html","FAQ",5],["reviews.html","Reviews"],["alternatives.html","Alternatives"],["topics.html","Topics"],["achievements.html","Achievements",10],["market.html","Market Profile"]];
+const cur=location.pathname.split("/").pop()||"index.html";
+document.body.insertAdjacentHTML("afterbegin",`<header><div class="wrap"><div class="top"><a class="logo" href="index.html"><i></i>Jewel Loop Hub</a><button class="burger" aria-label="menu">☰</button></div><nav class="tabs">${PAGES.map(p=>`<a href="${p[0]}" class="${p[0]==cur?"on":""}">${p[1]}${p[2]?`<sup>${p[2]}</sup>`:""}</a>`).join("")}</nav></div></header>`);
+document.body.insertAdjacentHTML("beforeend",`<footer><div class="wrap cols"><div><b style="color:var(--txt)">Jewel Loop Hub</b><p style="max-width:380px;margin-top:6px">An independent fan &amp; information site. Not affiliated with, endorsed by or connected to Ta Ta Game Technology Limited, Apple, Google or MWM. All trademarks belong to their respective owners.</p></div><div><b style="color:var(--txt)">Pages</b>${PAGES.slice(0,5).map(p=>`<a href="${p[0]}">${p[1]}</a>`).join("")}</div><div><b style="color:var(--txt)">&nbsp;</b>${PAGES.slice(5).map(p=>`<a href="${p[0]}">${p[1]}</a>`).join("")}</div><div><b style="color:var(--txt)">Official</b><a href="https://play.google.com/store/apps/details?id=com.jewel.sort.coloring.loop.match.paint.jigsaw" target="_blank" rel="noopener">Google Play</a><a href="https://apps.apple.com/search?term=Jewel%20Loop%20Coloring%20Sort" target="_blank" rel="noopener">App Store</a></div></div><div class="wrap" style="margin-top:18px">© 2026 Jewel Loop Hub</div></footer>`);
+document.querySelector(".burger").onclick=()=>document.querySelector("nav.tabs").classList.toggle("open");
+// animated pixel art
+const ART=["....RRRR....","..RRRRRRRR..",".RRWWRRRRRR.",".RRWRRRRRRR.","RRRRRRRRRRRR","RRRRRRRRRRRR","RRRRRRRRRRRR",".RRRRRRRRRR.",".RRRRRRRRRR.","..RRRRRRRR..","...RRRRRR...",".....GG....."];
+const COL={R:"#ff4f7b",W:"#ffd6e2",G:"#3ee08f"};
+document.querySelectorAll(".px").forEach(el=>{
+  const n=ART.length;el.style.gridTemplateColumns=`repeat(${n},1fr)`;
+  const cells=[];ART.join("").split("").forEach(c=>{const s=document.createElement("span");el.appendChild(s);if(c!==".")cells.push([s,COL[c]])});
+  let i=0;const tick=()=>{if(i<cells.length){const[s,c]=cells[i++];s.style.background=c;s.classList.add("f");s.style.transform="scale(1.15)";setTimeout(()=>s.style.transform="",250)}else{i=0;cells.forEach(([s])=>{s.style.background="";s.classList.remove("f")})}};setInterval(tick,90);
+});
+document.querySelectorAll(".loopbar").forEach(el=>{["#ff4f7b","#ffd23f","#38d9ff","#3ee08f","#a855f7","#ff4f7b"].forEach((c,k)=>{const b=document.createElement("b");b.style.background=c;b.style.animationDelay=`-${k}s`;el.appendChild(b)})});
